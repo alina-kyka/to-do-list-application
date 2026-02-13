@@ -31,6 +31,9 @@ artifacts/
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
 
+# Ignore local development and secret specific appsettings files
+appsettings.Development.json
+
 # NuGet Packages
 *.nupkg
 # NuGet Symbol Packages
