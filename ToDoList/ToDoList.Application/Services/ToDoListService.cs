@@ -5,9 +5,9 @@ using ToDoListApp.Application.Repositories;
 using ToDoListApp.Domain;
 
 namespace ToDoListApp.Application.Services;
-public class ToDoListService (IRepository<ToDoList> toDoListRepository) : IToDoListService
+public class ToDoListService (IToDoListRepository toDoListRepository) : IToDoListService
 {
-    private readonly IRepository<ToDoList> _toDoListRepository = toDoListRepository;
+    private readonly IToDoListRepository _toDoListRepository = toDoListRepository;
 
     public async Task CreateToDoListAsync(ToDoListCreateModel toDoList, CancellationToken ct = default)
     {
@@ -35,15 +35,18 @@ public class ToDoListService (IRepository<ToDoList> toDoListRepository) : IToDoL
     {
         var toDoList = await _toDoListRepository.FirstOrDefaultAsync(x => x.Id == id);
 
-        toDoList.EnsureFound(id, nameof(ToDoList));
+        NotFoundException.ThrowIfNull(toDoList);
 
         return toDoList!.ToToDoListModel();
     }
 
-    public async Task<ICollection<ToDoListModel>> GetToDoListsByUserIdAsync(string userId, int page, int pageSize, CancellationToken ct = default)
+    public async Task<IReadOnlyCollection<ToDoListModel>> GetToDoListsByUserIdAsync(ToDoListSearchRequestModel model, CancellationToken ct = default)
     {
         var entities = await _toDoListRepository
-            .SearchAsync(x => x.UserId == userId || x.SharedWith.Contains(userId), page, pageSize, ct);
+            .SearchAsync(x => x.UserId == model.UserId || x.SharedWith.Contains(model.UserId), 
+                model.Page, 
+                model.PageSize, 
+                ct);
 
         return entities
             .Select(x => x.ToToDoListModel())
@@ -81,7 +84,7 @@ public class ToDoListService (IRepository<ToDoList> toDoListRepository) : IToDoL
     {
         var toDoList = await _toDoListRepository.FirstOrDefaultAsync(x => x.Id == toDoListId);
 
-        toDoList.EnsureFound(toDoListId, nameof(ToDoList));
+        NotFoundException.ThrowIfNull(toDoList);
 
         if (!toDoList!.CanBeAccessedBy(userId))
             throw new ForbiddenException(toDoListId, userId, nameof(ToDoList));
@@ -92,7 +95,7 @@ public class ToDoListService (IRepository<ToDoList> toDoListRepository) : IToDoL
 
 public interface IToDoListService
 {
-    public Task<ICollection<ToDoListModel>> GetToDoListsByUserIdAsync(string userId, int page, int pageSize, CancellationToken ct);
+    public Task<IReadOnlyCollection<ToDoListModel>> GetToDoListsByUserIdAsync(ToDoListSearchRequestModel model, CancellationToken ct);
     public Task<ToDoListModel> GetToDoListByIdAsync(string id, CancellationToken ct);
     public Task CreateToDoListAsync(ToDoListCreateModel toDoList, CancellationToken ct);
     public Task UpdateToDoListAsync(ToDoListUpdateModel toDoList, CancellationToken ct);

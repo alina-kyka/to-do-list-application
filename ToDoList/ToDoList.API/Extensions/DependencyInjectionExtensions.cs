@@ -3,7 +3,6 @@ using ToDoListApp.Application.Models;
 using ToDoListApp.Application.Repositories;
 using ToDoListApp.Application.Services;
 using ToDoListApp.Application.Validators;
-using ToDoListApp.Domain;
 using ToDoListApp.Infrastructure.Contexts;
 using ToDoListApp.Infrastructure.Options;
 using ToDoListApp.Infrastructure.Repositories;
@@ -27,12 +26,13 @@ public static class DependencyInjectionExtensions
     }
     public static void AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IRepository<ToDoList>, TodoListRepository>();
+        services.AddScoped<IToDoListRepository, TodoListRepository>();
     }
     public static void AddFluentValidators(this IServiceCollection services)
     {
         services.AddScoped<IValidator<ToDoListShareModel>, ToDoListShareModelValidator>();
         services.AddScoped<IValidator<ToDoListUpdateModel>, ToDoListUpdateModelValidator>();
         services.AddScoped<IValidator<ToDoListCreateModel>, ToDoListCreateModelValidator>();
+        services.AddScoped<IValidator<ToDoListSearchRequestModel>, ToDoListSearchRequestModelValidator>();
     }
 }

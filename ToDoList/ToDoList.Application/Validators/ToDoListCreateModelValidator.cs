@@ -17,9 +17,9 @@ public class ToDoListCreateModelValidator : AbstractValidator<ToDoListCreateMode
             .NotEmpty()
             .WithMessage("Name cannot be empty.");
 
-        RuleFor(x => x.Name)
-            .MinimumLength(MIN_NAME_LENGTH)
-            .MaximumLength(MAX_NAME_LENGTH)
+        RuleFor(x => x.Name.Length)
+            .GreaterThan(MIN_NAME_LENGTH)
+            .LessThan(MAX_NAME_LENGTH)
             .WithMessage($"Length of User Name must be greater than {MIN_NAME_LENGTH} and less than {MAX_NAME_LENGTH}.");
     }
 }
