@@ -1,6 +1,8 @@
-using ToDoListApp.API.Extensions;
-using ToDoListApp.API.Middleware;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+using ToDoListApp.API.Common;
+using ToDoListApp.API.Endpoints;
+using ToDoListApp.Application.Extensions;
+using ToDoListApp.Infrastructure.Extensions;
 
 namespace ToDoListApp.API
 {
@@ -14,6 +16,9 @@ namespace ToDoListApp.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddFluentValidationAutoValidation();
 
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails();
+
             builder.Services.AddFluentValidators();
             builder.Services.AddDbContext();
             builder.Services.AddRepositories();
@@ -22,6 +27,8 @@ namespace ToDoListApp.API
 
             var app = builder.Build();
 
+            app.UseExceptionHandler();
+
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
@@ -29,7 +36,6 @@ namespace ToDoListApp.API
                 app.UseSwaggerUI();
             }
 
-            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
 
             app.AddToDoListEndpoints();

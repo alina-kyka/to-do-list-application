@@ -22,8 +22,8 @@ public class ToDoListUpdateModelValidator : AbstractValidator<ToDoListUpdateMode
             .WithMessage("Name cannot be empty.");
 
         RuleFor(x => x.Name.Length)
-            .LessThan(MIN_NAME_LENGTH)
-            .GreaterThan(MAX_NAME_LENGTH)
+            .GreaterThan(MIN_NAME_LENGTH)
+            .LessThan(MAX_NAME_LENGTH)
             .WithMessage($"Length of User Name must be greater than {MIN_NAME_LENGTH} and less than {MAX_NAME_LENGTH}.");
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ToDoListApp.API.Extensions;
+﻿namespace ToDoListApp.API.Endpoints;
 public static class Routes
 {
     public const string Root = "api";

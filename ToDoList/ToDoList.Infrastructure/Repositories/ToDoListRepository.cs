@@ -6,7 +6,7 @@ using ToDoListApp.Domain;
 using ToDoListApp.Infrastructure.Contexts;
 
 namespace ToDoListApp.Infrastructure.Repositories;
-public class TodoListRepository (ToDoListMongoDbContext context) : IRepository<ToDoList>
+public class TodoListRepository (ToDoListMongoDbContext context) : IToDoListRepository
 {
     private readonly ToDoListMongoDbContext _context = context;
     private IMongoCollection<ToDoList> _collection => _context.ToDoLists;
@@ -26,13 +26,13 @@ public class TodoListRepository (ToDoListMongoDbContext context) : IRepository<T
         return await _collection.AsQueryable().FirstOrDefaultAsync(predicate, ct);
     }
 
-    public async Task<IEnumerable<ToDoList>> SearchAsync(Expression<Func<ToDoList, bool>> predicate, int page, int amount, CancellationToken ct = default)
+    public async Task<IReadOnlyCollection<ToDoList>> SearchAsync(Expression<Func<ToDoList, bool>> predicate, int page, int pageSize, CancellationToken ct = default)
     {
         return await _collection.AsQueryable()
             .Where(predicate)
             .OrderByDescending(x => x.CreatedAt)
-            .Skip(page * amount)
-            .Take(amount)
+            .Skip(--page * pageSize)
+            .Take(pageSize)
             .ToListAsync();
     }
 

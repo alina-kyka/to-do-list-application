@@ -4,12 +4,10 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using ToDoListApp.Application.Models;
 using ToDoListApp.Application.Services;
 
-namespace ToDoListApp.API.Extensions;
+namespace ToDoListApp.API.Endpoints;
 
 public static class EndpointsRegistrationExtensions
 {
-    private const int PAGE_SIZE = 10;
-
     public static void AddToDoListEndpoints(this WebApplication app)
     {
         app.MapPost($"{Routes.Root}/{Routes.ToDoList.Base}", async (CancellationToken ct,
@@ -32,14 +30,14 @@ public static class EndpointsRegistrationExtensions
             .Produces<ToDoListModel>(StatusCodes.Status200OK);
 
         app.MapGet($"{Routes.Root}/{Routes.ToDoList.Base}", async (CancellationToken ct,
+            [FromServices] IValidator<ToDoListCreateModel> validator,
             [FromServices] IToDoListService toDoListService,
-            [FromQuery] string userId,
-            [FromQuery] int page = 0,
-            [FromQuery] int pageSize = PAGE_SIZE) =>
+            [AsParameters] ToDoListSearchRequestModel model) =>
         {
-            return Results.Ok(await toDoListService.GetToDoListsByUserIdAsync(userId, page, pageSize, ct));
+            return Results.Ok(await toDoListService.GetToDoListsByUserIdAsync(model, ct));
         })
-            .Produces<ICollection<ToDoListModel>>(StatusCodes.Status200OK);
+            .AddFluentValidationAutoValidation()
+            .Produces<IReadOnlyCollection<ToDoListModel>>(StatusCodes.Status200OK);
 
         app.MapGet($"{Routes.Root}/{Routes.ToDoList.Base}/{{id}}/{Routes.ToDoList.Relations}", async (CancellationToken ct,
             [FromServices] IToDoListService toDoListService,
