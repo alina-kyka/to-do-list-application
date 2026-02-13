@@ -1,6 +1,8 @@
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using ToDoListApp.API.Common;
-using ToDoListApp.API.Extensions;
+using ToDoListApp.API.Endpoints;
+using ToDoListApp.Application.Extensions;
+using ToDoListApp.Infrastructure.Extensions;
 
 namespace ToDoListApp.API
 {

@@ -4,7 +4,7 @@ using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 using ToDoListApp.Application.Models;
 using ToDoListApp.Application.Services;
 
-namespace ToDoListApp.API.Extensions;
+namespace ToDoListApp.API.Endpoints;
 
 public static class EndpointsRegistrationExtensions
 {

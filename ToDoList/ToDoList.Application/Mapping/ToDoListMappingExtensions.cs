@@ -1,7 +1,7 @@
 ﻿using ToDoListApp.Application.Models;
 using ToDoListApp.Domain;
 
-namespace ToDoListApp.Application.Extensions;
+namespace ToDoListApp.Application.Mapping;
 public static class ToDoListMappingExtensions
 {
     public static ToDoList ToToDoList(this ToDoListCreateModel model)
